@@ -1,0 +1,41 @@
+import React, { useState } from "react";
+
+const choices = ["rock", "paper", "scissors"];
+
+function App() {
+    const [userChoice, setUserChoice] = useState("");
+    const [computerChoice, setComputerChoice] = useState("");
+    const [result, setResult] = useState("");
+
+    const playGame = async (choice) => {
+        setUserChoice(choice);
+
+        const response = await fetch("http://localhost:5000/play", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ choice }),
+        });
+
+        const data = await response.json();
+        setComputerChoice(data.computerChoice);
+        setResult(data.result);
+    };
+
+    return (
+        <div>
+            <h1>Rock Paper Scissors</h1>
+            <div>
+                {choices.map((choice) => (
+                    <button key={choice} onClick={() => playGame(choice)}>
+                        {choice}
+                    </button>
+                ))}
+            </div>
+            <h2>Your choice: {userChoice}</h2>
+            <h2>Computer choice: {computerChoice}</h2>
+            <h2>Result: {result}</h2>
+        </div>
+    );
+}
+
+export default App;
